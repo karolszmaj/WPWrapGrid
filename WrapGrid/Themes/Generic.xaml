@@ -1,0 +1,36 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="clr-namespace:WrapGrid"
+                    xmlns:presenters="clr-namespace:WrapGrid.Presenters"
+                    xmlns:controls="clr-namespace:WrapGrid.Controls">
+
+    <Style TargetType="controls:WrapGrid">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="controls:WrapGrid">
+                    <Grid>
+                        <ScrollViewer x:Name="PART_ScrollContainer">
+                            <Grid x:Name="PART_ScrollGrid"/>
+                    	</ScrollViewer>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style TargetType="presenters:VirtualizedContentPresenter">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="presenters:VirtualizedContentPresenter">
+                    <Grid>
+                        <ContentPresenter Content="{TemplateBinding Content}"/>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    
+    <DataTemplate x:Name="DefaultTextBlockTemplate">
+        <TextBlock Text="{Binding .}" />
+    </DataTemplate>
+</ResourceDictionary>
