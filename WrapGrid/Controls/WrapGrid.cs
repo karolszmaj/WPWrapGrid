@@ -42,6 +42,7 @@ namespace WrapGrid.Controls
             this.virtualizationManager = new VirtualizationManager(scrollViewerMonitor);
 
             this.virtualizationManager.GetPanels += OnGetPanelsEventHandler;
+            this.virtualizationManager.CanVirtualize += OnCanVirtualizeEventHandler;
             this.scrollViewerMonitor.ScrollChanged += OnScrollViewerScrollChanged;
 
         }
@@ -108,6 +109,9 @@ namespace WrapGrid.Controls
             uiItemGenerator.SetSelector(TemplateSelector);
             uiItemGenerator.SetTemplate(ItemTemplate);
 
+            virtualizationManager.SetRootControl(scrollGrid);
+            virtualizationManager.SetScrollViewer(scrollContainer);
+
             itemPopulator.SetRootContainer(scrollGrid);
 
             scrollViewerMonitor.Register(scrollContainer);
@@ -125,7 +129,7 @@ namespace WrapGrid.Controls
             }
 
             //each time we generate clear table for elements
-            control.PopulateItems();
+            await control.PopulateItems();
         }
 
         private void OnScrollViewerScrollChanged(object sender, EventArgs.ScrollChangedEventArgs e)
@@ -133,11 +137,6 @@ namespace WrapGrid.Controls
             if (scrollContainer.VerticalOffset >= scrollContainer.ScrollableHeight)
             {
                 OnFetchMoreData();
-            }
-
-            if(EnableVirtualization)
-            {
-                itemPopulator.VirtualizeContainer(e.CurrentPosition);
             }
         }
 
@@ -150,6 +149,11 @@ namespace WrapGrid.Controls
         private IEnumerable<Panel> OnGetPanelsEventHandler()
         {
             return this.itemPopulator.Containers;
+        }
+
+        private bool OnCanVirtualizeEventHandler()
+        {
+            return !isProcessingData;
         }
 
         private async Task PopulateItems()
@@ -220,7 +224,7 @@ namespace WrapGrid.Controls
 
             if (EnableIncrementalLoading)
             {
-                await Task.Delay(10);
+                await Task.Delay(1);
             }
         }
 

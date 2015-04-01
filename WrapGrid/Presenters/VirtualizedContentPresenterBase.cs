@@ -42,12 +42,13 @@ namespace WrapGrid.Presenters
                     virtualizationControl.Visibility = System.Windows.Visibility.Visible;
                     virtualizationControl.Height = contentControl.ActualHeight;
                     virtualizationControl.Width = contentControl.ActualWidth;
+                    contentControl.DataContext = null;
                     gridContent.Children.Remove(contentControl);
                     contentControl = null;
                     //contentControl.Visibility = System.Windows.Visibility.Collapsed;
                 }
             }
-
+            
             this.UpdateLayout();
             State = ItemState.Virtualized;
         }
@@ -58,7 +59,7 @@ namespace WrapGrid.Presenters
             {
                 return;
             }
-
+            
             var content = ContentTemplateScheme.LoadContent() as FrameworkElement;
 
             var gridContent = Content as Grid;
@@ -71,7 +72,7 @@ namespace WrapGrid.Presenters
                 content.Width = virtualizationControl.ActualWidth;
                 gridContent.Children.Add(content);
             }
-
+            
             this.UpdateLayout();
             
             State = ItemState.Created;

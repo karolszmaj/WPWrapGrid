@@ -40,27 +40,6 @@ namespace WrapGrid.Internals
             panel.UpdateLayout();
         }
 
-        public void VirtualizeContainer(double currentVerticalPosition)
-        {/*
-            containerColumns.ForEach((panel) =>
-                {
-                    foreach (var child in panel.Children)
-                    {
-                        if (child is IVirtualized)
-                        {
-                            var vChildren = child as IVirtualized;
-                            Rect screenBounds = new Rect(0, 0, container.ActualWidth, container.ActualHeight);
-                            bool isChildVisibile = VisualTreeHelper.FindElementsInHostCoordinates(screenBounds, container).Contains(child);
-
-                            if (isChildVisibile == false)
-                            {
-                                vChildren.Susped();
-                            }
-                        }
-                    }
-                });*/
-        }
-
         public void RemoveElementFromContainer(object dataContextModel)
         {
             for (int i = 0; i < containerColumns.Count; i++)
@@ -68,7 +47,9 @@ namespace WrapGrid.Internals
                 var modelContext = containerColumns[i].Children.OfType<FrameworkElement>().FirstOrDefault(x => x.DataContext == dataContextModel);
                 if (modelContext != null)
                 {
+                    modelContext.DataContext = null;
                     containerColumns[i].Children.Remove(modelContext);
+                    containerColumns[i].UpdateLayout();
                     return;
                 }
             }
