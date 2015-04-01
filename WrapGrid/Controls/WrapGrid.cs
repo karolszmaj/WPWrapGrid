@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
@@ -142,6 +143,7 @@ namespace WrapGrid.Controls
 
         private async void OnItemsSourceCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
+            Debug.WriteLine("Started adding new items");
             var control = sender as WrapGrid;
             await PopulateItems(e.NewItems, e.OldItems);
         }
@@ -219,13 +221,13 @@ namespace WrapGrid.Controls
             virtualizedControl.Visibility = System.Windows.Visibility.Collapsed;
 
             var element = uiItemGenerator.CreateVirtualizedElement(virtualizedControl, model, true);
-
             itemPopulator.AddElementToContainer(element);
 
             if (EnableIncrementalLoading)
             {
                 await Task.Delay(1);
             }
+            
         }
 
         protected void OnFetchMoreData()

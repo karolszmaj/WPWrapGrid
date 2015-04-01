@@ -16,12 +16,13 @@ using System.Threading;
 
 namespace WrapGrid.Internals
 {
-    public class VirtualizationManager
+    public class VirtualizationManager: IDisposable
     {
         private Grid rootControl;
         private ScrollViewer scrollViewer;
         private readonly ScrollViewerMonitor scrollMonitor;
         private bool isVirtualizing;
+        private IDisposable scrollChangeObserver;
 
         public event Func<IEnumerable<Panel>> GetPanels;
         public event Func<bool> CanVirtualize;
@@ -35,7 +36,7 @@ namespace WrapGrid.Internals
                 .Throttle(TimeSpan.FromMilliseconds(200));
 
 
-            subjectScrollChanged
+            this.scrollChangeObserver = subjectScrollChanged
                 .ObserveOnDispatcher()
                 .Subscribe(args =>
                 {
@@ -82,8 +83,6 @@ namespace WrapGrid.Internals
 
         private void VirtualizeElements(ScrollViewer notifier)
         {
-            Stopwatch watcher = new Stopwatch();
-            watcher.Start();
             isVirtualizing = true;
             var panels = OnGetPanels();
 
@@ -97,17 +96,7 @@ namespace WrapGrid.Internals
                         if (child is IVirtualized)
                         {
                             var vChild = child as IVirtualized;
-
-                            bool isChildVisibile = IsItemVisible(child as FrameworkElement);// VisualTreeHelper.FindElementsInHostCoordinates(screenBounds, notifier).Contains(child);
-
-                            if (isChildVisibile == false)
-                            {
-                                vChild.Susped();
-                            }
-                            else
-                            {
-                                vChild.Activate();
-                            }
+                            vChild.Virtualize(notifier,false);
                         }
                     }
                 }
@@ -116,42 +105,9 @@ namespace WrapGrid.Internals
                 GC.WaitForPendingFinalizers();
                 GC.Collect();
             }
-
-            watcher.Stop();
-            Debug.WriteLine("Virtualized in {0} ms", watcher.ElapsedMilliseconds);
         }
 
-        private bool IsItemVisible(FrameworkElement element)
-        {
-            bool isItemVisible = false;
-
-            GeneralTransform childTransform = scrollViewer.TransformToVisual(element);
-            //Rect rectangle = childTransform.TransformBounds(new Rect(new Point(0, 0), scrollViewer.RenderSize));
-            var childPosition = childTransform.Transform(new Point());
-
-            if (childPosition.Y - element.ActualHeight > 0)
-            {
-                isItemVisible = false;
-            }
-            else if (Math.Abs(childPosition.Y) > scrollViewer.ActualHeight)
-            {
-                isItemVisible = false;
-            }
-            else
-            {
-                //items is below so we need to calculate if the control is visible in scrollviewer height
-                isItemVisible = true;
-            }
-
-            //Check if the elements Rect intersects with that of the scrollviewer's
-            /*new Rect(new Point(0, 0), element.RenderSize).Intersect(rectangle);
-            {
-                itemIsIntersected = true;
-            };*/
-
-
-            return isItemVisible;
-        }
+        
 
         public void SetRootControl(Grid rootControl)
         {
@@ -161,6 +117,11 @@ namespace WrapGrid.Internals
         public void SetScrollViewer(ScrollViewer scrollViewer)
         {
             this.scrollViewer = scrollViewer;
+        }
+
+        public void Dispose()
+        {
+            this.scrollChangeObserver.Dispose();
         }
     }
 }

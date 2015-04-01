@@ -53,7 +53,7 @@ namespace WrapGrid.Example
 
         async void MainPage_Loaded(object sender, RoutedEventArgs e)
         {
-            var result = await client.GetImagesAsync(0, 20);
+            var result = await client.GetImagesAsync(0, 5);
             Images = new ObservableCollection<ImageModel>(result);
         }
 
@@ -71,7 +71,7 @@ namespace WrapGrid.Example
 
         private async void DataGrid_FetchMoreData(object sender, System.EventArgs e)
         {
-            var result = await client.GetImagesAsync(Images.Count, 20);
+            var result = await client.GetImagesAsync(Images.Count, 10);
 
             foreach (var item in result)
             {

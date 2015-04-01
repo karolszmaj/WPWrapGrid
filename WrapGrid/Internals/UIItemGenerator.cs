@@ -32,9 +32,9 @@ namespace WrapGrid.Internals
         /// <param name="model"></param>
         /// <param name="bindModelToDataContext"></param>
         /// <returns></returns>
-        public FrameworkElement CreateVirtualizedElement(FrameworkElement virtualizedContent, object model, bool bindModelToDataContext)
+        public VirtualizedContentPresenter CreateVirtualizedElement(FrameworkElement virtualizedContent, object model, bool bindModelToDataContext)
         {
-            FrameworkElement result = null;
+            VirtualizedContentPresenter result = null;
             DataTemplate template = null;
 
             if (itemTemplate != null)

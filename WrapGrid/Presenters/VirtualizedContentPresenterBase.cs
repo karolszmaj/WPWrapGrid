@@ -14,18 +14,36 @@ namespace WrapGrid.Presenters
     internal abstract class VirtualizedContentPresenterBase : ContentControl, IVirtualized
     {
         private ItemState state;
-
-        public ItemState State
-        {
-            get { return this.state; }
-            private set { this.state = value; }
-        }
+        private ScrollViewer parentScroll;
 
         public DataTemplate ContentTemplateScheme { get; set; }
 
-        public void Susped()
+        void VirtualizedContentPresenterBase_Loaded(object sender, RoutedEventArgs e)
         {
-            if(State == ItemState.Virtualized)
+            Virtualize(this.parentScroll, false);
+        }
+
+        public void Virtualize(ScrollViewer parentScrollContainer, bool useLazyVirtualization)
+        {
+            this.parentScroll = parentScrollContainer;
+
+            if(!useLazyVirtualization)
+            {
+                if (IsItemVisible(this.parentScroll))
+                {
+                    Activate();
+                }
+                else
+                {
+                    Susped();
+                }
+            }
+            
+        }
+
+        private void Susped()
+        {
+            if(state == ItemState.Virtualized)
             {
                 return;
             }
@@ -50,12 +68,12 @@ namespace WrapGrid.Presenters
             }
             
             this.UpdateLayout();
-            State = ItemState.Virtualized;
+            state = ItemState.Virtualized;
         }
 
-        public void Activate()
+        private void Activate()
         {
-            if(State == ItemState.Created)
+            if(state == ItemState.Created)
             {
                 return;
             }
@@ -75,7 +93,32 @@ namespace WrapGrid.Presenters
             
             this.UpdateLayout();
             
-            State = ItemState.Created;
+            state = ItemState.Created;
         }
+
+        private bool IsItemVisible(ScrollViewer scrollViewer)
+        {
+            bool isItemVisible = false;
+
+            GeneralTransform childTransform = scrollViewer.TransformToVisual(this);
+            var childPosition = childTransform.Transform(new Point());
+
+            if (childPosition.Y - this.ActualHeight > 0)
+            {
+                isItemVisible = false;
+            }
+            else if (Math.Abs(childPosition.Y) > scrollViewer.ActualHeight)
+            {
+                isItemVisible = false;
+            }
+            else
+            {
+                //items is below so we need to calculate if the control is visible in scrollviewer height
+                isItemVisible = true;
+            }
+
+            return isItemVisible;
+        }
+
     }
 }

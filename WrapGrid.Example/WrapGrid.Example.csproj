@@ -128,8 +128,6 @@
     <None Include="Properties\WMAppManifest.xml">
       <SubType>Designer</SubType>
     </None>
-    <None Include="WrapGrid.Example_2015_04_01_08_29_37.sap" />
-    <None Include="WrapGrid.Example_2015_04_01_08_32_18.sap" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Assets\AlignmentGrid.png" />

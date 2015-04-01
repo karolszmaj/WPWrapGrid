@@ -72,6 +72,7 @@
             <controls:WrapGrid Name="DataGrid"
                                Columns="2"
                                ItemsSource="{Binding Images}"
+                               EnableIncrementalLoading="True"
                                FetchMoreData="DataGrid_FetchMoreData">
                 <controls:WrapGrid.ItemTemplate>
                     <DataTemplate>
