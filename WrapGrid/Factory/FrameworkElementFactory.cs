@@ -32,7 +32,6 @@ namespace WrapGrid.Factory
                 ContentTemplate = virtualizedContentTemplate
             };
 
-            //SetUniqueNames(content, virtualizedContent);
             container.Children.Add(virtualizedContent);
             container.Children.Add(content);
 

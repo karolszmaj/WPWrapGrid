@@ -88,7 +88,6 @@
     <Compile Include="Factory\FrameworkElementFactory.cs" />
     <Compile Include="Helpers\DebugInfo.cs" />
     <Compile Include="Helpers\ResourceDictionaryLoader.cs" />
-    <Compile Include="Interfaces\IScrollAware.cs" />
     <Compile Include="Interfaces\IVirtualized.cs" />
     <Compile Include="Internals\ContainerGenerator.cs" />
     <Compile Include="Internals\DefaultGridSelector.cs" />
@@ -96,7 +95,6 @@
     <Compile Include="Internals\ScrollViewerMonitor.cs" />
     <Compile Include="Internals\UIItemGenerator.cs" />
     <Compile Include="Internals\VirtualizationManager.cs" />
-    <Compile Include="Panels\VirtualizedStackPanel.cs" />
     <Compile Include="Presenters\VirtualizedContentPresenter.cs" />
     <Compile Include="Presenters\VirtualizedContentPresenterBase.cs" />
     <Compile Include="Selectors\DataTemplateSelector.cs" />
