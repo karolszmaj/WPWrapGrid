@@ -66,5 +66,39 @@ namespace WrapGrid.Internals
 
             return result;
         }
+
+        public VirtualizedContentPresenter CreateLazyVirtualizedElement(DataTemplate virtualizedContentTemplate, object model, bool bindModelToDataContext)
+        {
+            VirtualizedContentPresenter result = null;
+            DataTemplate template = null;
+
+            if (itemTemplate != null)
+            {
+                template = itemTemplate;
+            }
+            else if (selector != null)
+            {
+                template = selector.SelectTemplate(model);
+            }
+            else
+            {
+                throw new InvalidOperationException("ItemTemplate or ItemTemplateSelector must be provided");
+            }
+
+            var generatedFullControl = FrameworkElementFactory.CreateVirtualizedControl(model, template, virtualizedContentTemplate);
+
+            result = new VirtualizedContentPresenter()
+            {
+                Content = generatedFullControl,
+                ContentTemplateScheme = template
+            };
+
+            if (bindModelToDataContext)
+            {
+                result.DataContext = model;
+            }
+
+            return result;
+        }
     }
 }

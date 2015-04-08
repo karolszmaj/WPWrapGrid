@@ -77,7 +77,8 @@
                 <controls:WrapGrid.ItemTemplate>
                     <DataTemplate>
                         <Grid Margin="6">
-                            <Image Source="{Binding Url}"></Image>
+                            <Image Source="{Binding Url}" MinHeight="150"
+                                   Stretch="UniformToFill"></Image>
                         </Grid>
                     </DataTemplate>
                 </controls:WrapGrid.ItemTemplate>

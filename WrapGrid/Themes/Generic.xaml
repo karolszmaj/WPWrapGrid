@@ -10,8 +10,8 @@
                 <ControlTemplate TargetType="controls:WrapGrid">
                     <Grid>
                         <ScrollViewer x:Name="PART_ScrollContainer">
-                            <Grid x:Name="PART_ScrollGrid"/>
-                    	</ScrollViewer>
+                            <Grid x:Name="PART_ScrollGrid" />
+                        </ScrollViewer>
                     </Grid>
                 </ControlTemplate>
             </Setter.Value>

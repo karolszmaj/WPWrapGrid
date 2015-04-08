@@ -23,7 +23,6 @@ namespace WrapGrid.Controls
         private Grid scrollGrid;
         private ScrollViewer scrollContainer;
         private int indexCounter;
-        private bool isProcessingData;
 
         private readonly ContainerGenerator containerGenerator;
         private readonly UIItemGenerator uiItemGenerator;
@@ -55,6 +54,7 @@ namespace WrapGrid.Controls
         public static readonly DependencyProperty EnableIncrementalLoadingProperty = DependencyProperty.Register("EnableIncrementalLoading", typeof(bool), typeof(WrapGrid), new PropertyMetadata(true));
         public static readonly DependencyProperty EnableVirtualizationProperty = DependencyProperty.Register("EnableVirtualization", typeof(bool), typeof(WrapGrid), new PropertyMetadata(false));
         public static readonly DependencyProperty VirtualizedContentTemplateProperty = DependencyProperty.Register("VirtualizedContentTemplate", typeof(DataTemplate), typeof(WrapGrid), new PropertyMetadata(null));
+        public static readonly DependencyProperty IsInProgressProperty = DependencyProperty.Register("IsInProgress", typeof(bool), typeof(WrapGrid), new PropertyMetadata(false));
 
         public IEnumerable ItemsSource
         {
@@ -98,6 +98,13 @@ namespace WrapGrid.Controls
             set { SetValue(VirtualizedContentTemplateProperty, value); }
         }
 
+        public bool IsInProgress
+        {
+            get { return (bool)GetValue(IsInProgressProperty); }
+            set { SetValue(IsInProgressProperty, value); }
+        }
+
+      
         public override void OnApplyTemplate()
         {
             base.OnApplyTemplate();
@@ -155,17 +162,17 @@ namespace WrapGrid.Controls
 
         private bool OnCanVirtualizeEventHandler()
         {
-            return !isProcessingData;
+            return !IsInProgress;
         }
 
         private async Task PopulateItems()
         {
-            if (isProcessingData)
+            if (IsInProgress)
             {
                 return;
             }
 
-            isProcessingData = true;
+            IsInProgress = true;
             int localCounter = 0;
 
             if (ItemsSource == null)
@@ -184,12 +191,12 @@ namespace WrapGrid.Controls
             }
 
             indexCounter += localCounter;
-            isProcessingData = false;
+            IsInProgress = false;
         }
 
         private async Task PopulateItems(IEnumerable itemsToAdd, IEnumerable itemsToRemove)
         {
-            isProcessingData = true;
+            IsInProgress = true;
             if(ItemsSource != null)
             {
                 if (itemsToAdd != null)
@@ -210,17 +217,16 @@ namespace WrapGrid.Controls
                 
             }
 
-            isProcessingData = false;
+            IsInProgress = false;
         }
 
         private async Task AddElementToList(object model)
         {
             string controlGuid = Guid.NewGuid().ToString();
 
-            var virtualizedControl = VirtualizedContentTemplate.LoadContent() as FrameworkElement;
-            virtualizedControl.Visibility = System.Windows.Visibility.Collapsed;
-
-            var element = uiItemGenerator.CreateVirtualizedElement(virtualizedControl, model, true);
+            //var virtualizedControl = VirtualizedContentTemplate.LoadContent() as FrameworkElement;
+            //virtualizedControl.Visibility = System.Windows.Visibility.Collapsed;
+            var element = uiItemGenerator.CreateLazyVirtualizedElement(VirtualizedContentTemplate, model, true);
             itemPopulator.AddElementToContainer(element);
 
             if (EnableIncrementalLoading)

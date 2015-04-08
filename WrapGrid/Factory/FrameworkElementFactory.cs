@@ -18,6 +18,27 @@ namespace WrapGrid.Factory
             return result;
         }
 
+        public static FrameworkElement CreateVirtualizedControl(object model, DataTemplate contentTemplate, DataTemplate virtualizedContentTemplate)
+        {
+            Grid container = new Grid();
+            ContentPresenter content = new ContentPresenter()
+            {
+                Content = model,
+                ContentTemplate = contentTemplate
+            };
+
+            ContentPresenter virtualizedContent = new ContentPresenter()
+            {
+                ContentTemplate = virtualizedContentTemplate
+            };
+
+            //SetUniqueNames(content, virtualizedContent);
+            container.Children.Add(virtualizedContent);
+            container.Children.Add(content);
+
+            return container;
+        }
+
         private static FrameworkElement CreateGrid(FrameworkElement content, FrameworkElement virtualizedContent)
         {
             Grid container = new Grid();

@@ -79,9 +79,11 @@ namespace WrapGrid.Presenters
             }
             
             var content = ContentTemplateScheme.LoadContent() as FrameworkElement;
+            content.Name = Guid.NewGuid().ToString();
 
             var gridContent = Content as Grid;
             var virtualizationControl = gridContent.Children.FirstOrDefault() as FrameworkElement;
+
 
             if (virtualizationControl != null)
             {
